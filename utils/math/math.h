@@ -1,0 +1,1 @@
+extern float calculateIntegrate(float (float), float, float);

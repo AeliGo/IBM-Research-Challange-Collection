@@ -15,9 +15,13 @@ float getIntegrate(float arr[4])
   return calculateIntegrate(mes, -1, 1);
 }
 
-float *getGradient(float arr[4])
+float *getSlopes(float arr[4])
 {
-  static float result[4], copyArr[4] = {1, 1, 1, 1};
+  static float result[4], copyArr[4];
+  for (int i = 0; i < 4; i++)
+  {
+    copyArr[i] = arr[i];
+  }
   float delta = 0.00001;
 
   for (int i = 0; i < 4; i++)
@@ -25,6 +29,7 @@ float *getGradient(float arr[4])
     copyArr[i] = arr[i] + delta;
 
     result[i] = (getIntegrate(copyArr) - getIntegrate(arr)) / delta;
+
     copyArr[i] = arr[i];
   }
 
@@ -45,31 +50,27 @@ int main()
   float params[] = {1, 1, 1, 1};
   float *p;
   p = params;
-  
-  float *gradients = getGradient(params);
+
+  float *slopes = getSlopes(params);
   float previous = getIntegrate(params);
 
   while (getIntegrate(params) <= previous)
   {
-    float new = getIntegrate(params), step = 0.001;
-    if (new < 1)
-    {
-      step = 0.0001;
-    }
-    else if (new < 0.1)
-    {
-      step = 0.000001;
-    }
+    float new = getIntegrate(params);
 
-    printf("mse为：%g\n", new);
+    slopes = getSlopes(params);
+
+    printf("mse is：%g", new);
     previous = new;
-    gradientDescent(params, gradients, step);
+    gradientDescent(params, slopes, 0.1);
   }
 
+  printf("result is:\n");
   for (int i = 0; i < 4; ++i)
   {
-    printf("结果为：%g\n", gradients[i]);
+    printf("- %g\n", params[i]);
   }
+  //0.143544, 1.2936, -0.0819361, -0.411489
 
   return 0;
 }

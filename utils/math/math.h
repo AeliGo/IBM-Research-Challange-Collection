@@ -1,1 +1,1 @@
-extern float calculateIntegrate(float (float), float, float);
+extern double calculateIntegrate(double (double), double, double);

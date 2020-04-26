@@ -3,74 +3,100 @@
 #include <math.h>
 #include "../utils/math/math.h"
 
-float getIntegrate(float arr[4])
+double getIntegrate(double arr[8])
 {
   //nested function
-  float mes(float x)
+  double mes(double x)
   {
-    float loss = arr[0] + arr[1] * pow(x, 2) + arr[2] * pow(x, 4) + arr[3] * pow(x, 6) - fabsf(x);
+
+    // double loss = arr[0] + arr[1] * pow(x, 2) + arr[2] * pow(x, 4) + arr[3] * pow(x, 6) - fabsf(x);
+    double loss = arr[0] + arr[1] * pow(x, 2) + arr[2] / (arr[3] + arr[4] * pow(x, 2)) + arr[5] / (arr[6] + arr[7] * pow(x, 2)) - fabsf(x);
     return pow(loss, 2) / 2;
   };
 
   return calculateIntegrate(mes, -1, 1);
 }
 
-float *getSlopes(float arr[4])
+double *updateSlopes(double slopes[], double arr[])
 {
-  static float result[4], copyArr[4];
-  for (int i = 0; i < 4; i++)
+  double copyArr[8];
+  for (int i = 0; i < 8; i++)
   {
     copyArr[i] = arr[i];
   }
-  float delta = 0.00001;
 
-  for (int i = 0; i < 4; i++)
+  double delta = 0.000001;
+
+  for (int i = 0; i < 8; i++)
   {
     copyArr[i] = arr[i] + delta;
-
-    result[i] = (getIntegrate(copyArr) - getIntegrate(arr)) / delta;
-
+    slopes[i] = (getIntegrate(copyArr) - getIntegrate(arr)) / delta;
     copyArr[i] = arr[i];
   }
-
-  return result;
 }
 
-void gradientDescent(float origin[4], float gradient[4], float step)
+void updateParams(double origin[8], double gradient[8], double step)
 {
-  static float result[4];
-  for (int i = 0; i < 4; i++)
+
+  double d;
+  double result[8];
+  for (int i = 0; i < 8; i++)
   {
-    origin[i] = origin[i] - step * gradient[i];
+    d = step * gradient[i];
+    origin[i] = origin[i] - d;
+  }
+}
+
+double getLearningStep(double previousParams[8], double params[8], double previousSlopes[8], double slopes[8])
+{
+  double sum = 0, sqSum = 0;
+  for (int i = 0; i < 8; i++)
+  {
+    sum = sum + (params[i] - previousParams[i]) * (slopes[i] - previousSlopes[i]);
+    sqSum = sqSum + pow((slopes[i] - previousSlopes[i]), 2);
+  }
+
+  return fabs(sum) / sqSum;
+}
+
+double *cloneArray(double target[], double arr[])
+{
+  for (int i = 0; i < 8; i++)
+  {
+    target[i] = arr[i];
   }
 }
 
 int main()
 {
-  float params[] = {1, 1, 1, 1};
-  float *p;
-  p = params;
+  double params[8] = {1,1,1,1,1,1,1,1};
+  double slopes[8] = {0,0,0,0,0,0,0,0};
 
-  float *slopes = getSlopes(params);
-  float previous = getIntegrate(params);
+  double previousParams[8] = {0,0,0,0,0,0,0,0};
+  double previousSlopes[8] = {0,0,0,0,0,0,0,0};
 
-  while (getIntegrate(params) <= previous)
+  double step = 0.1;
+
+  updateSlopes(slopes, params);
+
+  while (getIntegrate(params) > 0.000003)
   {
-    float new = getIntegrate(params);
+    cloneArray(previousParams, params);
+    cloneArray(previousSlopes, slopes);
 
-    slopes = getSlopes(params);
+    updateParams(params, slopes, step);
+    updateSlopes(slopes, params);
 
-    printf("mse is：%g", new);
-    previous = new;
-    gradientDescent(params, slopes, 0.1);
-  }
+    step = getLearningStep(previousParams, params, previousSlopes, slopes);
+    double new = getIntegrate(params);
 
-  printf("result is:\n");
-  for (int i = 0; i < 4; ++i)
+    printf("mse is：%.80lf,%.80lf\n", new, step);
+  };
+
+  for (int i = 0; i < 8; ++i)
   {
-    printf("- %g\n", params[i]);
+    printf("result is:%g\n", params[i]);
   }
-  //0.143544, 1.2936, -0.0819361, -0.411489
 
   return 0;
 }

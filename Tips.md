@@ -5,5 +5,3 @@
   print(results, file=f2)
   f2.close()
 ```
-
-## 

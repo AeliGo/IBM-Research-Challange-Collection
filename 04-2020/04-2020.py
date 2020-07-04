@@ -1,7 +1,6 @@
 import numpy as np
 import random
 
-
 def calculateProbability(AdjacentMatrix, days):
     dimension = len(AdjacentMatrix)
     state = np.zeros((2**dimension), dtype=int)

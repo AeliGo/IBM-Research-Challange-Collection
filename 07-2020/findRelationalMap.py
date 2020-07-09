@@ -5,7 +5,6 @@ from validation import getFibonacciList, getGoldenRectangleNumber, validation
 
 
 def getAssignableIndexes(state, value):
-
     verticalMerge = np.sum(state, axis=0)
     return [
         idx for idx, item in enumerate(verticalMerge)
@@ -24,11 +23,10 @@ def randomAssign(state, value, assignableCountLeft, assignableIndexes):
     if (assignableCountLeft == 0): return copyState
 
     #randomly assign count left
-    for t in range(100):
+    for t in range(10):
         results = []
         left = assignableCountLeft
         for index in assignableIndexes:
-
             coe = random.randint(0, math.floor(left / value[index]))
             left = left - coe * value[index]
             if (left < 0): break
@@ -40,8 +38,7 @@ def randomAssign(state, value, assignableCountLeft, assignableIndexes):
         if (left == 0 and len(results) != 0):
             for idx, result in enumerate(results):
                 for time in range(result):
-                    copyState[random.randint(0, dimension -
-                                             1)][assignableIndexes[idx]] += 1
+                    copyState[random.randint(0, dimension - 1)][assignableIndexes[idx]] += 1
             return copyState
     return []
 
@@ -51,14 +48,15 @@ def findSolution(state, value, n):
     assignableIndexes = getAssignableIndexes(state, value)
     verticalMerge = np.sum(state, axis=0)
     currentCount = np.dot(verticalMerge, value)
-    assignableCount = getGoldenRectangleNumber(n + 1) - currentCount
+    assignableCount = getGoldenRectangleNumber(n + 2) - currentCount
 
     if (assignableCount < 0): return
     if (assignableCount == 0):
         if (len(assignableIndexes) > 0): return
         if (len(assignableIndexes) == 0):
-            print('start validation',state)
-            if (validation(state, value, 80) == True):
+            initValue = np.zeros(dimension, dtype=int)
+            initValue[0] = 1
+            if (validation(state, initValue, 40) == True):
                 print('Solution found111111111111111111111:', state)
 
     if (assignableCount > 0):
@@ -68,14 +66,13 @@ def findSolution(state, value, n):
         if (assignableCountLeft < 0): return
         if (len(assignableIndexes) == 0): return
         if (len(assignableIndexes) > 0):
-            for x in range(100):
+            for x in range(10):
                 assignedState = randomAssign(state, value, assignableCountLeft,
                                              assignableIndexes)
                 if (len(assignedState) != 0):
                     findSolution(assignedState, np.dot(assignedState, value),
                                  n + 1)
 
-FibonacciList = getFibonacciList(40)
 
 for d in [4,5,6,7,8,9,10]:
   dimension = d

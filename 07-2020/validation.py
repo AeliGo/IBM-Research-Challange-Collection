@@ -39,18 +39,21 @@ def validation(evolutionMatrix, initialMatrix, limit):
                     initialMatrix) != getGoldenRectangleNumber(count):
                 # print("incorrect at ", count)
                 return False
-            else:
-                print("correct at ", count)
-
+            # else:
+            #     print("correct at ", count)
     return True
 
 
 FibonacciList = getFibonacciList(10000)
 
+# matrix_a = [[1, 2, 0, 2],
+#  [0, 1, 1, 0],
+#  [0, 1, 0, 1],
+#  [1, 0, 0, 1]]
 # matrix_initial_a = [1, 0, 0, 0]
-# matrix_initial_b = [1, 0, 0, 0, 0]
-# matrix_a = [[1, 1, 1, 0], [1, 1, 1, 1], [0, 1, 0, 0], [0, 1, 0, 0]]
-# matrix_b = [[0, 1, 2, 1, 0], [1, 0, 0, 1, 0], [1, 0, 1, 0, 0], [0, 1, 0, 1, 1],
-#             [0, 0, 1, 1, 0]]
+# # matrix_initial_b = [1, 0, 0, 0, 0]
+# # matrix_a = [[1, 1, 1, 0], [1, 1, 1, 1], [0, 1, 0, 0], [0, 1, 0, 0]]
+# # matrix_b = [[0, 1, 2, 1, 0], [1, 0, 0, 1, 0], [1, 0, 1, 0, 0], [0, 1, 0, 1, 1],
+# #             [0, 0, 1, 1, 0]]
 
-# validation(matrix_b, matrix_initial_b, 9000)
+# validation(matrix_a, matrix_initial_a, 9000)

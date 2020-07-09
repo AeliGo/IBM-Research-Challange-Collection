@@ -17,7 +17,7 @@ def getGoldenRectangleNumber(n):
     return FibonacciList[n] * FibonacciList[n + 1]
 
 
-def calculateTotalCount(initialMatrix):
+def calculateTotalCount(evolutionMatrix, initialMatrix):
     total = 0
     subMatrix = []
     for i in range(len(evolutionMatrix)):
@@ -31,26 +31,26 @@ def calculateTotalCount(initialMatrix):
     return total
 
 
-def validation(limit):
-    initialMatrix = initial
+def validation(evolutionMatrix, initialMatrix, limit):
     for count in range(limit):
         if count > 1:
-            if calculateTotalCount(initialMatrix) != getGoldenRectangleNumber(
-                    count):
-                print("incorrect at ", count)
-                break
+            if calculateTotalCount(
+                    evolutionMatrix,
+                    initialMatrix) != getGoldenRectangleNumber(count):
+                # print("incorrect at ", count)
+                return False
             else:
                 print("correct at ", count)
+
+    return True
 
 
 FibonacciList = getFibonacciList(10000)
 
-matrix_initial_a = [1, 0, 0, 0]
-matrix_initial_b = [1, 0, 0, 0, 0]
-matrix_a = [[1, 1, 1, 0], [1, 1, 1, 1], [0, 1, 0, 0], [0, 1, 0, 0]]
-matrix_b = [[0, 1, 2, 1, 0], [1, 0, 0, 1, 0], [1, 0, 1, 0, 0], [0, 1, 0, 1, 1],
-            [0, 0, 1, 1, 0]]
-evolutionMatrix = matrix_b
-initial = matrix_initial_b
+# matrix_initial_a = [1, 0, 0, 0]
+# matrix_initial_b = [1, 0, 0, 0, 0]
+# matrix_a = [[1, 1, 1, 0], [1, 1, 1, 1], [0, 1, 0, 0], [0, 1, 0, 0]]
+# matrix_b = [[0, 1, 2, 1, 0], [1, 0, 0, 1, 0], [1, 0, 1, 0, 0], [0, 1, 0, 1, 1],
+#             [0, 0, 1, 1, 0]]
 
-validation(9000)
+# validation(matrix_b, matrix_initial_b, 9000)

@@ -8,10 +8,7 @@ def getAllNodes():
     return nodes
 
 
-def generateStatusCollection(nodes):
-    winRules = []
-    loseRules = [(0, 0, 0)]
-
+def generateStatusCollection(nodes, loseRules, winRules):
     statusMap = []
     for node in nodes:
         if node in loseRules:
@@ -50,10 +47,14 @@ def getPositionCollection(nodes):
     return collection
 
 
+winRules = []
+loseRules = [(0, 0, 0)]
+nodes = getAllNodes()
+positionCollection = getPositionCollection(nodes)
+
+
 def findSolution():
-    nodes = getAllNodes()
-    statusCollection = generateStatusCollection(nodes)
-    positionCollection = getPositionCollection(nodes)
+    statusCollection = generateStatusCollection(nodes, loseRules, winRules)
 
     lose = []
     for idx, status in enumerate(statusCollection):
@@ -67,6 +68,3 @@ def findSolution():
                 statusCollection[idx] = "L"
                 lose.append(idx)
     print(len(lose))
-
-
-findSolution()

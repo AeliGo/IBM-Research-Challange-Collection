@@ -1,6 +1,3 @@
-from pydash import _
-
-
 def getAllNodes():
     nodes = []
     for z in range(101):
@@ -48,15 +45,9 @@ def getPositionCollection(nodes):
                     break
                 targetPosition.append(nodesMap[tuple(sorted([a, b, c]))])
                 step += 1
-                if a == 100 or b == 100 or c == 100:
-                    break
         positions = list(set(targetPosition))
         collection.append(positions)
     return collection
-
-
-def updateStatusCollection(nodes, index):
-    print(nodes)
 
 
 def findSolution():
@@ -72,7 +63,6 @@ def findSolution():
         if status == "U":
             statusCollection[idx] = "L"
     
-    print(statusCollection)
 
 
 

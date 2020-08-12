@@ -55,15 +55,18 @@ def findSolution():
     statusCollection = generateStatusCollection(nodes)
     positionCollection = getPositionCollection(nodes)
 
+    lose = []
     for idx, status in enumerate(statusCollection):
-        if status == "L":
+        if status != "W":
             for p in positionCollection[idx]:
                 if statusCollection[p] == "U":
                     statusCollection[p] = "W"
-        if status == "U":
-            statusCollection[idx] = "L"
-    
-
+            if status == "L":
+                lose.append(idx)
+            elif status == "U":
+                statusCollection[idx] = "L"
+                lose.append(idx)
+    print(len(lose))
 
 
 findSolution()

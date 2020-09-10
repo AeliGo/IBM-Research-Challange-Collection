@@ -15,8 +15,7 @@ class solution:
 
     def run(self):
         for data in dataset:
-            self.generateRelationMap(str(data)).find3cycle(
-            ).getPossibleAutomorphism().filterAutomorphism()
+            self.generateRelationMap(str(data)).find3cycle().getPossibleAutomorphism().filterAutomorphism()
 
     def getPossibleAutomorphism(self):
         for i in range(self.dimension):

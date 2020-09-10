@@ -15,8 +15,9 @@ class solution:
         self.dataset = dataset
 
     def run(self):
-        for data in dataset:
-            self.generateRelationMap(str(data)).find3cycle().getPossibleAutomorphism().filterAutomorphism()
+        for data in self.dataset:
+            self.generateRelationMap(str(data)).find3cycle(
+            ).getPossibleAutomorphism().filterAutomorphism()
 
     def getPossibleAutomorphism(self):
         for i in range(self.dimension):
@@ -50,7 +51,9 @@ class solution:
             if self.checkIsAutomorphism(automorphism):
                 self.automorphism.append(automorphism)
         print(self.automorphism)
-        print("------------------------------------------------------------------------------------------------")
+        print(
+            "------------------------------------------------------------------------------------------------"
+        )
         return self
 
     def checkIsAutomorphism(self, automorphism):
@@ -66,6 +69,21 @@ class solution:
                     for textTwo in [[ss[0:2], ss[2:3]], [ss[1:3], ss[3:4]],
                                     [ss[2:4], ss[4:5]]]:
                         if textTwo[0] in aa:
+                            return False
+                    if item[0] in automorphism and item[
+                            1] in automorphism and item[2] in automorphism:
+                        index0 = automorphism.find(item[0])
+                        index1 = automorphism.find(item[1])
+                        index2 = automorphism.find(item[2])
+                        newChar = automorphism[index0 - 1] + automorphism[
+                            index1 - 1] + automorphism[index2 - 1]
+                        cc = newChar + newChar
+                        isThere = False
+                        for charThree in [cc[0:3], cc[1:4], cc[2:5]]:
+                            for ii in range(self.dimension):
+                                if charThree in self.threeCyclesMap[ii]:
+                                    isThere = True
+                        if isThere == False:
                             return False
 
         return True

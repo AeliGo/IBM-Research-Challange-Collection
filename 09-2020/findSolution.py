@@ -16,8 +16,7 @@ class solution:
 
     def run(self):
         for data in dataset:
-            self.generateRelationMap(str(data)).find3cycle(
-            ).getPossibleAutomorphism().filterAutomorphism()
+            self.generateRelationMap(str(data)).find3cycle().getPossibleAutomorphism().filterAutomorphism()
 
     def getPossibleAutomorphism(self):
         for i in range(self.dimension):
@@ -32,7 +31,7 @@ class solution:
                 text = container[0:-1] + item
                 if self.isUnique(text):
                     self.concatCycle(int(item[-1]), text)
-                    if len(container) > 0:
+                    if len(container) > 3:
                         self.allPossibleAutomorphism.append(container)
 
     def isUnique(self, str):
@@ -46,7 +45,8 @@ class solution:
 
     def filterAutomorphism(self):
         self.automorphism = []
-        for automorphism in self.allPossibleAutomorphism:
+        allPossibleAutomorphism = list(set(self.allPossibleAutomorphism))
+        for automorphism in allPossibleAutomorphism:
             if self.checkIsAutomorphism(automorphism):
                 self.automorphism.append(automorphism)
         print(self.automorphism)
@@ -56,8 +56,6 @@ class solution:
     def checkIsAutomorphism(self, automorphism):
         for i in range(self.dimension):
             for item in self.threeCyclesMap[i]:
-                if len(automorphism) == 3:
-                    return False
                 isTrue = False
                 ss = item + item
                 aa = automorphism + automorphism

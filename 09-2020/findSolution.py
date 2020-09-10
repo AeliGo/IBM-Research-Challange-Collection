@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class solution:
     dimension = 0
     dataset = []
@@ -15,7 +16,8 @@ class solution:
 
     def run(self):
         for data in dataset:
-            self.generateRelationMap(str(data)).find3cycle().getPossibleAutomorphism().filterAutomorphism()
+            self.generateRelationMap(str(data)).find3cycle(
+            ).getPossibleAutomorphism().filterAutomorphism()
 
     def getPossibleAutomorphism(self):
         for i in range(self.dimension):
@@ -43,15 +45,19 @@ class solution:
         return True
 
     def filterAutomorphism(self):
+        self.automorphism = []
         for automorphism in self.allPossibleAutomorphism:
             if self.checkIsAutomorphism(automorphism):
                 self.automorphism.append(automorphism)
         print(self.automorphism)
+        print("------------------------------------------------------------------------------------------------")
         return self
 
     def checkIsAutomorphism(self, automorphism):
         for i in range(self.dimension):
             for item in self.threeCyclesMap[i]:
+                if len(automorphism) == 3:
+                    return False
                 isTrue = False
                 ss = item + item
                 aa = automorphism + automorphism
@@ -59,11 +65,11 @@ class solution:
                     if textThree in aa:
                         isTrue = True
                 if isTrue == False:
-                    return False
-                    # for textTwo in [[ss[0:2], ss[2:3]], [ss[1:3], ss[3:4]],
-                    #                 [ss[2:4], ss[4:5]]]:
-                    #     if textTwo[0] in aa and textTwo[1] in aa:
-                    #         return False
+                    for textTwo in [[ss[0:2], ss[2:3]], [ss[1:3], ss[3:4]],
+                                    [ss[2:4], ss[4:5]]]:
+                        if textTwo[0] in aa:
+                            return False
+
         return True
 
     def generateRelationMap(self, data):
@@ -81,7 +87,7 @@ class solution:
                     if i in self.relationMap[iii]:
                         self.threeCyclesMap[i].append(
                             str(i) + str(ii) + str(iii))
-        print(self.threeCyclesMap)
+        # print(self.threeCyclesMap)
         return self
 
     # method used to split original data
@@ -97,7 +103,6 @@ class solution:
     def fillMap(self, splitArr):
         for i in range(self.dimension):
             self.relationMap[i] = []
-        y = 0
         for x, item in enumerate(splitArr):
             for i, value in enumerate(item):
                 y = i + x + 1

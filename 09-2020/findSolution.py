@@ -48,7 +48,8 @@ class solution:
         self.automorphism = []
         allPossibleAutomorphism = list(set(self.allPossibleAutomorphism))
         for automorphism in allPossibleAutomorphism:
-            if self.checkIsAutomorphism(automorphism):
+            if self.checkIsAutomorphism(automorphism) and self.checkIsNotExist(
+                    automorphism):
                 self.automorphism.append(automorphism)
         print(self.automorphism)
         print(
@@ -56,35 +57,56 @@ class solution:
         )
         return self
 
+    def checkIsNotExist(self, automorphism):
+        for i in range(len(automorphism)):
+            cc = automorphism + automorphism
+            if cc[i:i + len(automorphism)] in self.automorphism:
+                return False
+        return True
+
     def checkIsAutomorphism(self, automorphism):
         for i in range(self.dimension):
             for item in self.threeCyclesMap[i]:
-                isTrue = False
-                ss = item + item
-                aa = automorphism + automorphism
-                for textThree in [ss[0:3], ss[1:4], ss[2:5]]:
-                    if textThree in aa:
-                        isTrue = True
-                if isTrue == False:
-                    for textTwo in [[ss[0:2], ss[2:3]], [ss[1:3], ss[3:4]],
-                                    [ss[2:4], ss[4:5]]]:
-                        if textTwo[0] in aa:
-                            return False
-                    if item[0] in automorphism and item[
-                            1] in automorphism and item[2] in automorphism:
-                        index0 = automorphism.find(item[0])
-                        index1 = automorphism.find(item[1])
-                        index2 = automorphism.find(item[2])
-                        newChar = automorphism[index0 - 1] + automorphism[
-                            index1 - 1] + automorphism[index2 - 1]
-                        cc = newChar + newChar
-                        isThere = False
-                        for charThree in [cc[0:3], cc[1:4], cc[2:5]]:
-                            for ii in range(self.dimension):
-                                if charThree in self.threeCyclesMap[ii]:
-                                    isThere = True
-                        if isThere == False:
-                            return False
+                index1 = automorphism.find(item[0])
+                index2 = automorphism.find(item[1])
+                index3 = automorphism.find(item[2])
+                char1 = automorphism[index1 - 1] if index1 >= 0 else item[0]
+                char2 = automorphism[index2 - 1] if index2 >= 0 else item[1]
+                char3 = automorphism[index3 - 1] if index3 >= 0 else item[2]
+                cc = char1 + char2 + char3 + char1 + char2 + char3
+                isThere = False
+                for charThree in [cc[0:3], cc[1:4], cc[2:5]]:
+                    for ii in range(self.dimension):
+                        if charThree in self.threeCyclesMap[ii]:
+                            isThere = True
+                if isThere == False:
+                    return False
+
+                # isTrue = False
+                # ss = item + item
+                # aa = automorphism + automorphism
+                # for textThree in [ss[0:3], ss[1:4], ss[2:5]]:
+                #     if textThree in aa:
+                #         isTrue = True
+                # if isTrue == False:
+                #     for textTwo in [[ss[0:2], ss[2:3]], [ss[1:3], ss[3:4]],
+                #                     [ss[2:4], ss[4:5]]]:
+                #         if textTwo[0] in aa:
+                #             return False
+                #     if item[0] in automorphism and item[1] in automorphism and item[2] in automorphism:
+                #         index0 = automorphism.find(item[0])
+                #         index1 = automorphism.find(item[1])
+                #         index2 = automorphism.find(item[2])
+                #         newChar = automorphism[index0 - 1] + automorphism[
+                #             index1 - 1] + automorphism[index2 - 1]
+                #         cc = newChar + newChar
+                #         isThere = False
+                #         for charThree in [cc[0:3], cc[1:4], cc[2:5]]:
+                #             for ii in range(self.dimension):
+                #                 if charThree in self.threeCyclesMap[ii]:
+                #                     isThere = True
+                #         if isThere == False:
+                #             return False
 
         return True
 

@@ -1,14 +1,16 @@
-import numpy as np
+
+# reference:
+# http://uplsj.com/wp-content/uploads/2020/09/rps.pdf
 
 
 class solution:
     dimension = 0
     dataset = []
-
+    
     relationMap = {}
+    threeCycles = []
     threeCyclesMap = {}
-    allPossibleAutomorphism = []
-    automorphism = []
+    profileMap = {}
 
     def __init__(self, dimension, dataset):
         self.dimension = dimension
@@ -16,99 +18,47 @@ class solution:
 
     def run(self):
         for data in self.dataset:
-            self.generateRelationMap(str(data)).find3cycle(
-            ).getPossibleAutomorphism().filterAutomorphism()
+            self.generateRelationMap(
+                str(data)).find3cycle().getCycles().generateProfile()
+            print(
+                "-----------------------------------------------------------------------------------------------------------------------"
+            )
 
-    def getPossibleAutomorphism(self):
+    def getCycles(self):
+        self.threeCycles = []
         for i in range(self.dimension):
-            self.concatCycle(i, "")
+            for cycle in self.threeCyclesMap[i]:
+                if self.checkIsNotExist(cycle):
+                    self.threeCycles.append(cycle)
         return self
 
-    def concatCycle(self, i, container):
-        if len(container) == self.dimension and self.isUnique(container):
-            self.allPossibleAutomorphism.append(container)
-        else:
-            for item in self.threeCyclesMap[i]:
-                text = container[0:-1] + item
-                if self.isUnique(text):
-                    self.concatCycle(int(item[-1]), text)
-                    if len(container) > 3:
-                        self.allPossibleAutomorphism.append(container)
-
-    def isUnique(self, str):
-        n = len(str)
-        i = 0
-        while i != n:
-            if str[i] in str[i + 1:]:
-                return False
-            i += 1
-        return True
-
-    def filterAutomorphism(self):
-        self.automorphism = []
-        allPossibleAutomorphism = list(set(self.allPossibleAutomorphism))
-        for automorphism in allPossibleAutomorphism:
-            if self.checkIsAutomorphism(automorphism) and self.checkIsNotExist(
-                    automorphism):
-                self.automorphism.append(automorphism)
-        print(self.automorphism)
-        print(
-            "------------------------------------------------------------------------------------------------"
-        )
-        return self
-
-    def checkIsNotExist(self, automorphism):
-        for i in range(len(automorphism)):
-            cc = automorphism + automorphism
-            if cc[i:i + len(automorphism)] in self.automorphism:
+    def checkIsNotExist(self, cycle):
+        for i in range(len(cycle)):
+            cc = cycle + cycle
+            if cc[i:i + len(cycle)] in self.threeCycles:
                 return False
         return True
 
-    def checkIsAutomorphism(self, automorphism):
+    def generateProfile(self):
         for i in range(self.dimension):
+            self.profileMap[i] = []
             for item in self.threeCyclesMap[i]:
-                index1 = automorphism.find(item[0])
-                index2 = automorphism.find(item[1])
-                index3 = automorphism.find(item[2])
-                char1 = automorphism[index1 - 1] if index1 >= 0 else item[0]
-                char2 = automorphism[index2 - 1] if index2 >= 0 else item[1]
-                char3 = automorphism[index3 - 1] if index3 >= 0 else item[2]
-                cc = char1 + char2 + char3 + char1 + char2 + char3
-                isThere = False
-                for charThree in [cc[0:3], cc[1:4], cc[2:5]]:
-                    for ii in range(self.dimension):
-                        if charThree in self.threeCyclesMap[ii]:
-                            isThere = True
-                if isThere == False:
-                    return False
+                ss = item + item
+                counts = []
+                for edge in [ss[0:2], ss[1:3], ss[2:4]]:
+                    counts.append(self.getEdgeInCycleCount(edge))
+                self.profileMap[i].append(counts)
 
-                # isTrue = False
-                # ss = item + item
-                # aa = automorphism + automorphism
-                # for textThree in [ss[0:3], ss[1:4], ss[2:5]]:
-                #     if textThree in aa:
-                #         isTrue = True
-                # if isTrue == False:
-                #     for textTwo in [[ss[0:2], ss[2:3]], [ss[1:3], ss[3:4]],
-                #                     [ss[2:4], ss[4:5]]]:
-                #         if textTwo[0] in aa:
-                #             return False
-                #     if item[0] in automorphism and item[1] in automorphism and item[2] in automorphism:
-                #         index0 = automorphism.find(item[0])
-                #         index1 = automorphism.find(item[1])
-                #         index2 = automorphism.find(item[2])
-                #         newChar = automorphism[index0 - 1] + automorphism[
-                #             index1 - 1] + automorphism[index2 - 1]
-                #         cc = newChar + newChar
-                #         isThere = False
-                #         for charThree in [cc[0:3], cc[1:4], cc[2:5]]:
-                #             for ii in range(self.dimension):
-                #                 if charThree in self.threeCyclesMap[ii]:
-                #                     isThere = True
-                #         if isThere == False:
-                #             return False
+        for i in range(self.dimension):
+            print(i, ": ", self.profileMap[i])
+        return self
 
-        return True
+    def getEdgeInCycleCount(self, edge):
+        count = 0
+        for cycle in self.threeCycles:
+            if edge[0] in cycle and edge[1] in cycle:
+                count += 1
+        return count
 
     def generateRelationMap(self, data):
         splitData = self.splitStr(self.dimension - 1, data, [])
@@ -125,7 +75,6 @@ class solution:
                     if i in self.relationMap[iii]:
                         self.threeCyclesMap[i].append(
                             str(i) + str(ii) + str(iii))
-        # print(self.threeCyclesMap)
         return self
 
     # method used to split original data

@@ -28,8 +28,7 @@ class solution:
         self.threeCycles = []
         for i in range(self.dimension):
             for cycle in self.threeCyclesMap[i]:
-                if self.checkIsNotExist(cycle):
-                    self.threeCycles.append(cycle)
+                self.checkIsNotExist(cycle) and self.threeCycles.append(cycle)
         return self
 
     def checkIsNotExist(self, cycle):
@@ -72,9 +71,7 @@ class solution:
             for ii in levelOne:
                 levelTwo = self.relationMap[ii]
                 for iii in levelTwo:
-                    if i in self.relationMap[iii]:
-                        self.threeCyclesMap[i].append(
-                            str(i) + str(ii) + str(iii))
+                    i in self.relationMap[iii] and self.threeCyclesMap[i].append(str(i) + str(ii) + str(iii))
         return self
 
     # method used to split original data

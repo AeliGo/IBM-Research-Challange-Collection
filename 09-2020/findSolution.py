@@ -1,3 +1,4 @@
+import json
 
 # reference:
 # http://uplsj.com/wp-content/uploads/2020/09/rps.pdf
@@ -6,11 +7,12 @@
 class solution:
     dimension = 0
     dataset = []
-    
+
     relationMap = {}
     threeCycles = []
     threeCyclesMap = {}
     profileMap = {}
+    chunkedVertex = []
 
     def __init__(self, dimension, dataset):
         self.dimension = dimension
@@ -18,8 +20,8 @@ class solution:
 
     def run(self):
         for data in self.dataset:
-            self.generateRelationMap(
-                str(data)).find3cycle().getCycles().generateProfile()
+            self.generateRelationMap(str(data)).find3cycle().getCycles(
+            ).generateProfile().getChunkedVertex()
             print(
                 "-----------------------------------------------------------------------------------------------------------------------"
             )
@@ -40,16 +42,29 @@ class solution:
 
     def generateProfile(self):
         for i in range(self.dimension):
-            self.profileMap[i] = []
+            self.profileMap[i] = {}
             for item in self.threeCyclesMap[i]:
                 ss = item + item
                 counts = []
                 for edge in [ss[0:2], ss[1:3], ss[2:4]]:
-                    counts.append(self.getEdgeInCycleCount(edge))
-                self.profileMap[i].append(counts)
+                    counts.append(str(self.getEdgeInCycleCount(edge)))
+                key = "".join(counts)
+                self.profileMap[i][key] = self.profileMap[i][
+                    key] + 1 if key in self.profileMap[i] else 1
+                self.profileMap[i] = dict(sorted(self.profileMap[i].items()))
+        return self
 
-        for i in range(self.dimension):
-            print(i, ": ", self.profileMap[i])
+    def getChunkedVertex(self):
+        self.chunkedVertex = []
+        pointProfileDict = {}
+
+        for key, value in self.profileMap.items():
+            valueInJson = json.dumps(value)
+            if valueInJson in pointProfileDict:
+                pointProfileDict[valueInJson].append(key)
+            else:
+                pointProfileDict[valueInJson] = [key]
+        self.chunkedVertex = list(pointProfileDict.values())
         return self
 
     def getEdgeInCycleCount(self, edge):
@@ -71,7 +86,8 @@ class solution:
             for ii in levelOne:
                 levelTwo = self.relationMap[ii]
                 for iii in levelTwo:
-                    i in self.relationMap[iii] and self.threeCyclesMap[i].append(str(i) + str(ii) + str(iii))
+                    i in self.relationMap[iii] and self.threeCyclesMap[
+                        i].append(str(i) + str(ii) + str(iii))
         return self
 
     # method used to split original data

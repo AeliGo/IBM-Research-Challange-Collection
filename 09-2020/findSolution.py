@@ -1,7 +1,6 @@
 import json
 from itertools import permutations
-
-from dataset import dataset9, dataset11, dataset12
+from dataset import dataset9, dataset11
 
 # reference:
 # http://uplsj.com/wp-content/uploads/2020/09/rps.pdf
@@ -23,7 +22,7 @@ class solution:
         self.dataset = dataset
 
     def run(self):
-        for data in self.dataset:
+        for index,data in enumerate(self.dataset):
             #clear am container
             self.am = []
 
@@ -34,9 +33,10 @@ class solution:
             self.getChunkedVertices()
             self.searchAutomorphism(self.chunkedVertex, 0,
                                     [i for i in range(self.dimension)])
+            
             if len(self.am) > 1:
-                print("Total Ams:", len(self.am))
-                print("Solution:", self.relationMap)
+                print("Total Ams:", len(self.am), "for data:", index)
+                len(self.am) > 40 and print("Solution:", self.relationMap)
                 print("----------------------------------------------------")
 
     def generateRelationMap(self, data):
@@ -71,14 +71,15 @@ class solution:
             for ii in levelOne:
                 levelTwo = self.relationMap[ii]
                 for iii in levelTwo:
-                    i in self.relationMap[iii] and self.threeCyclesMap[
-                        i].append(str(i) + str(ii) + str(iii))
+                    i in self.relationMap[iii] and self.threeCyclesMap[i].append([i,ii,iii])
+            
 
     def getCycles(self):
         self.threeCycles = []
         for i in range(self.dimension):
             for cycle in self.threeCyclesMap[i]:
                 self.checkIsNotExist(cycle) and self.threeCycles.append(cycle)
+        
 
     def checkIsNotExist(self, cycle):
         for i in range(len(cycle)):
@@ -105,9 +106,8 @@ class solution:
                 ss = item + item
                 counts = []
                 for edge in [ss[0:2], ss[1:3], ss[2:4]]:
-                    counts.append(self.getEdgeInCycleCount(edge))
-                counts.sort()
-                key = "".join([str(count) for count in counts])
+                    counts.append(str(self.getEdgeInCycleCount(edge)))
+                key = "".join(counts)
                 self.profileMap[i][key] = self.profileMap[i][
                     key] + 1 if key in self.profileMap[i] else 1
                 self.profileMap[i] = dict(sorted(self.profileMap[i].items()))
@@ -145,7 +145,66 @@ class solution:
                                         [p for p in permutationIndices])
 
 
-# solution9 = solution(9, dataset9)
-solution11 = solution(11, dataset11)
-# solution9.run()
-solution11.run()
+solution9 = solution(9, dataset9)
+# solution11 = solution(11, dataset11)
+solution9.run()
+# solution11.run()
+
+
+# listing of the automorphism groups for the RPS(5) graphs
+# ---------------------------------------------------------------
+# Total Ams: 3 for data: 1
+# Total Ams: 3 for data: 3
+# Total Ams: 3 for data: 5
+# Total Ams: 9 for data: 6
+# Total Ams: 3 for data: 8
+# Total Ams: 3 for data: 9
+# Total Ams: 81 for data: 11
+# Solution: {
+#     0: [1, 2, 3, 4], 
+#     1: [2, 3, 4, 5], 
+#     2: [3, 6, 7, 8], 
+#     3: [4, 6, 7, 8], 
+#     4: [2, 6, 7, 8], 
+#     5: [0, 2, 3, 4], 
+#     6: [0, 1, 5, 7], 
+#     7: [0, 1, 5, 8], 
+#     8: [0, 1, 5, 6]
+#     }
+# Total Ams: 9 for data: 14
+
+
+
+# listing of the automorphism groups for the RPS(11) graphs
+# ---------------------------------------------------------------
+# Total Ams: 3 for data: 209
+# Total Ams: 3 for data: 210
+# Total Ams: 11 for data: 306
+# Total Ams: 5 for data: 430
+# Total Ams: 5 for data: 492
+# Total Ams: 5 for data: 532
+# Total Ams: 3 for data: 564
+# Total Ams: 3 for data: 602
+# Total Ams: 3 for data: 603
+# Total Ams: 5 for data: 612
+# Total Ams: 55 for data: 637
+# Solution: {
+#     0: [1, 2, 3, 4, 5], 
+#     1: [2, 3, 6, 7, 8], 
+#     2: [3, 5, 6, 9, 10], 
+#     3: [4, 5, 7, 8, 10], 
+#     4: [1, 2, 7, 9, 10], 
+#     5: [1, 4, 6, 8, 9], 
+#     6: [0, 3, 4, 7, 9], 
+#     7: [0, 2, 5, 8, 9], 
+#     8: [0, 2, 4, 6, 10], 
+#     9: [0, 1, 3, 8, 10], 
+#     10: [0, 1, 5, 6, 7]
+# }
+# Total Ams: 5 for data: 733
+# Total Ams: 5 for data: 859
+# Total Ams: 9 for data: 901
+# Total Ams: 3 for data: 902
+# Total Ams: 5 for data: 912
+# Total Ams: 11 for data: 1067
+# Total Ams: 11 for data: 1222

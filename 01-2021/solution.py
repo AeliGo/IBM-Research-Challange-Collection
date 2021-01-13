@@ -23,7 +23,7 @@ def changeDirection(direction, motion=1):
         return directions[3] if index == 0 else directions[index - 1]
 
 
-def getTargetIndex(index, direction):
+def getTargetIndex(index, direction, dimension):
     dimensionSquare = dimension * dimension
     if direction == "up":
         return index + dimensionSquare - dimension if index - dimension < 0 else index - dimension
@@ -36,7 +36,7 @@ def getTargetIndex(index, direction):
                                          1) % dimension == 0 else index + 1
 
 
-def botGoOnAdventure(currentIndex, targetDirection, grid):
+def botGoOnAdventure(currentIndex, targetDirection, grid, dimension):
     index = currentIndex
     direction = targetDirection
     count = 0
@@ -62,7 +62,7 @@ def botGoOnAdventure(currentIndex, targetDirection, grid):
         if value == 2:
             count += 1
         #takes one step forward
-        index = getTargetIndex(index, direction)
+        index = getTargetIndex(index, direction, dimension)
 
     return checkFullyVaccinated(grid)
 
@@ -78,13 +78,17 @@ def findSolution(dimension):
     for i in range(dimensionSquare):
         for j in range(i + 1, dimensionSquare):
             grid = initializeMap([i, j], dimensionSquare)
-            if botGoOnAdventure(0, "up", grid) == True:
+            if botGoOnAdventure(0, "up", grid, dimension) == True:
                 print(
                     "Position Found:",
                     [getCoordinate(i, dimension),
                      getCoordinate(j, dimension)])
                 return
+    print("No solution found.")
 
 
-dimension = 50
-findSolution(dimension)
+# findSolution(50) 
+# [(0,34),(48,1)] 
+  
+# findSolution(100)
+# [(0, 82), (35, 26)]
